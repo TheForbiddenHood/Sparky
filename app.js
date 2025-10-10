@@ -12,6 +12,7 @@ const invitesparkyCommand = require('./commands/invitesparky.js');
 const pelsCommand = require('./commands/pels.js');
 const statsCommand = require('./commands/stats.js');
 const magic8BallCommand = require('./commands/8ball.js');
+const magic8BallCommand = require('./commands/Sillytools.js');
 const scheduleCommand = require('./commands/schedule.js');
 
 // Launch a new Discord Client, and declare intents (permissions for bot)
@@ -179,4 +180,5 @@ client.on('guildMemberAdd', async member => {
 });
 
 // "token" refers to token.js which will keep the bot's unique token safe from prying eyes by keeping it local to the host here.
+
 client.login(token);
