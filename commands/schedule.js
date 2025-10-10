@@ -61,7 +61,7 @@ module.exports = {
                 .setDescription(`I will remind everyone in this channel 30 minutes before the event you just scheduled!`)
                 .addFields(
                     { name: 'Event Name', value: eventName, inline: false },
-                    { name: 'Time', value: `<t:${Math.floor(scheduledTime.getTime() / 1000)}:F>`, inline: true }, // Discord timestamp format
+                    { name: 'Time', value: `<t:${Math.floor(scheduledTime.getTime() / 1000)}:F>`, inline: true },
                     { name: 'Place', value: eventPlace, inline: true },
                     { name: 'Scheduled By', value: message.author.tag, inline: true }
                 )
@@ -74,4 +74,5 @@ module.exports = {
             message.reply('An error occurred while trying to save the event.');
         }
     }
+
 };
