@@ -35,7 +35,7 @@ function checkReminders(client) {
     }
 
     if (!data.events || data.events.length === 0) {
-        return; // No events to check
+        return; 
     }
 
     const now = Date.now();
@@ -79,7 +79,7 @@ function checkReminders(client) {
             eventsUpdated = true;
         }
 
-        return true; // Keep the event in the list if it hasn't passed
+        return true; 
     });
 
     // Write the updated data (with 'reminded: true' or removed old events)
@@ -180,3 +180,4 @@ client.on('guildMemberAdd', async member => {
 // "token" refers to token.js which will keep the bot's unique token safe from prying eyes by keeping it local to the host here.
 
 client.login(token);
+
