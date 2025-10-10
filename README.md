@@ -25,3 +25,23 @@ git push
 git pull
 ```
 
+**Did you drop the baby somewhere? Don't worry you can use the Time Stone!**
+```
+git log
+```
+That will get the HASHs (history of the commits with unique IDs )
+
+```
+git checkout HASH
+```
+
+### Terminal Controls
+Lost? Don't fear, the controls are HERE
+
+```
+Ctrl + C (Kill Current Process)
+
+Q (Common Editor Exit)
+
+Ctrl + X (Nano Finish / Exit)
+```
