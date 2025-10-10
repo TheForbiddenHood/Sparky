@@ -46,13 +46,13 @@ function checkReminders(client) {
         const eventTime = new Date(event.time).getTime();
         const timeUntilEvent = eventTime - now;
 
-        // 1. Check if the event has passed and can be removed
+        // Did the event already happen? If it did we do NOT need it
         if (timeUntilEvent < -REMINDER_WINDOW_MS) {
-            eventsUpdated = true; // Mark for saving (to remove old events)
-            return false; // Remove event from the list
+            eventsUpdated = true; 
+            return false; 
         }
 
-        // 2. Check if it's time for the 5-minute reminder
+        // 30min reminder checker
         if (timeUntilEvent > 0 && timeUntilEvent <= REMINDER_WINDOW_MS && !event.reminded) {
             
             // Get the channel to send the message
@@ -61,7 +61,7 @@ function checkReminders(client) {
             if (channel) {
                 // Send the reminder message
                 const reminderEmbed = new EmbedBuilder()
-                    .setColor('#FFD700') // Gold/Yellow for alerts
+                    .setColor('#FFD700') 
                     .setTitle(`🔔 Event Reminder (30 Minutes!)`)
                     .setDescription(`The scheduled event is starting soon!`)
                     .addFields(
@@ -109,7 +109,6 @@ client.on('ready', () => {
 // Want to kill the bot? Go into discord, enter a server with the bot and type '!unplug' (only works for user IDs entered in the "!unplug" command line.
 // This bot's welcome feature is NOT portable. This means every time a server wants the welcome feature it has to be hard-coded in each time.
 // This bot currently services 130 people across 3 discord servers.
-// This is the current bot link https://discord.com/oauth2/authorize?client_id=1419423775560306708&permissions=67600&integration_type=0&scope=bot (perm score of 67600)
 
 
 // Listener for incoming messages (This scans ALL messages sent by users for the prefix)
@@ -179,4 +178,5 @@ client.on('guildMemberAdd', async member => {
 });
 
 // "token" refers to token.js which will keep the bot's unique token safe from prying eyes by keeping it local to the host here.
+
 client.login(token);
