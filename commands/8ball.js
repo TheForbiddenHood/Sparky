@@ -1,57 +1,57 @@
-const { EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, MessageFlags } = require('discord.js');
 const fs = require('fs');
 
 module.exports = {
-    name: '8ball',
-    description: 'Asks the Magic 8-Ball a question.',
-    execute(message, client) {
-        // Define an array of all possible 8-ball responses.
-        const responses = [
-            'It is certain.',
-            'It is decidedly so.',
-            'Without a doubt.',
-            'Yes – definitely.',
-            'You may rely on it.',
-            'As I see it, yes.',
-            'Most likely.',
-            'Outlook good.',
-            'Yes.',
-            'Signs point to yes.',
-            'Reply hazy, try again.',
-            'Ask again later.',
-            'Better not tell you now.',
-            'Cannot predict now.',
-            'Concentrate and ask again.',
-            'Don\'t count on it.',
-            'My reply is no.',
-            'My sources say no.',
-            'Outlook not so good.',
-            'Very doubtful.'
-        ];
+    // Slash Command Structure
+    data: new SlashCommandBuilder()
+    .setName('8ball')
+    .setDescription('Ask the magic 8ball a question!')
+    .addStringOption(option => 
+        option.setName('question')
+        .setDescription('The question you want to ask')
+        .setRequired(true)),
 
-        // Check if a question was asked
-        const userQuestion = message.content.slice(message.content.indexOf(' '));
-        if (userQuestion.length < 2) {
-            return message.reply('The 8-Ball needs a question!');
+    async execute(interaction) {
+        const DATA_PATH = './data.json';
+
+        // Now let's pull the question from the interaction
+        const userQuestion = interaction.options.getString('question');
+
+        // Here we'll read data.json so we can pull the possible responses as well as later i++ the counter
+        let data;
+        try {
+            const dataFile = fs.readFileSync(DATA_PATH, 'utf8');
+            data = JSON.parse(dataFile);
+        } catch (error) {
+            console.error(`Sparky couldn't read data.json:`, error);
+            return interaction.reply({content: `I can't find my crystal ball. Try again later!`});
         }
 
-        // Get a random response from the array
-        const randomIndex = Math.floor(Math.random() * responses.length);
-        const randomResponse = responses[randomIndex];
+         // Send the console log so we know the command was triggered and by whom
+        console.log(`[${new Date().toLocaleString()}] Sparky heard /8ball from ${interaction.user.tag}`)
 
-        // Create the embed message
+        // Get the responses from data.json
+        const ballResponse = data.eightball;
+
+        // Randomize the response and prep it for the embed.
+        const randomReply = Math.floor(Math.random() * ballResponse.length);
+        const eightballResponse = ballResponse[randomReply];
+
+        // The embed
         const embed = new EmbedBuilder()
-            .setColor('#FFFFFF') // A nice Discord-like blue
-            .setTitle('The Magic 8-Ball has spoken...')
-            .setDescription(`**You asked:** ${userQuestion}\n\n**🎱:** ${randomResponse}`)
+        .setColor('#7289DA')
+        .setTitle('The Magic 8-Ball has spoken...')
+        .setDescription(`${interaction.user.tag} asked: ${userQuestion}\n\n🎱: ${eightballResponse}`)
 
-        // Send the embed to the channel
-        message.channel.send({ embeds: [embed] });
+        // Respond to the user via interaction
+        await interaction.reply({ embeds: [embed] });
 
-        // Counter
-        const dataFile = fs.readFileSync('./data.json', 'utf8');
-        const data = JSON.parse(dataFile);
-        data.ball_count = (data.ball_count + 1);
-        fs.writeFileSync('./data.json', JSON.stringify(data, null, 4), 'utf8');
+        // Update the usage in stats (now admin panel)
+        try{
+            data.ball_count = (data.ball_count || 0) + 1;
+            fs.writeFileSync(DATA_PATH, JSON.stringify(data, null, 4), 'utf8');
+        } catch (err) {
+            console.error(`Sparky couldn't update ball_count in data.json:`, err);
+        }
     }
-};
+}

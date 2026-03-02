@@ -1,78 +1,99 @@
-const { EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, MessageFlags, Embed } = require('discord.js');
 const fs = require('fs');
 
 module.exports = {
-    name: 'schedule',
-    description: 'Schedules a new event and sets a 5-minute reminder.',
-    aliases: ['event', 'setevent'],
-    execute(message, client) {
-        // GET THE INPUT FROM USER!!!!  
-        const args = message.content.slice(message.content.indexOf(' ') + 1).split('|').map(arg => arg.trim());
+    // Slash Command Structure
+    data: new SlashCommandBuilder()
+    .setName('schedule')
+    .setDescription('Saves an event and sends a reminder 30min prior to the event.')
+    .addStringOption(option =>
+        option.setName('time')
+        .setDescription('Format: YYYY-MM-DD HH:MM (ex. 2026-02-10 20:55)')
+        .setRequired(true))
+    .addStringOption(option =>
+            option.setName('name')
+            .setDescription(`What's the name of the event?`)
+            .setRequired(true))
+    .addStringOption(option =>
+        option.setName('place')
+        .setDescription('Where is this event occuring?')
+        .setRequired(true)),
 
-        if (args.length < 3) {
-            return message.reply({ content: 'Please provide the event details in this format: `!schedule [YYYY-MM-DD HH:MM] | [Event Name] | [Place]`' });
-        }
+async execute(interaction){
+    const DATA_PATH = './data.json';
 
-        const [dateTimeString, eventName, eventPlace] = args;
-        const scheduledTime = new Date(dateTimeString);
-        const currentTime = new Date();
+    // Deconstructor
+    const {user, options, channel, client } = interaction;
 
-        // Accepting or NOT accepting the input from user
-        if (isNaN(scheduledTime.getTime())) {
-            return message.reply({ content: 'I could not understand that Time/Date. Please use the format YYYY-MM-DD HH:MM (e.g., 2025-10-25 19:30).' });
-        }
+    // Here, we'll pull the data we got from the user input via interaction
+    const timeAndDate = interaction.options.getString('time');
+    const eventName = interaction.options.getString('name');
+    const eventLoc = interaction.options.getString('place');
 
-        // Ensure this didn't already occur
-        if (scheduledTime <= currentTime) {
-            return message.reply({ content: 'Nice try!  You can only have me remind you of FUTURE events, this date already passed! (Check your event date)' });
-        }
+    const scheduledTime = new Date(timeAndDate);
+    const currentTime = new Date();
 
-        // Create the event object
-        const newEvent = {
-            name: eventName,
-            time: scheduledTime.toISOString(), // Save as standard ISO string
-            place: eventPlace,
-            channelId: message.channel.id, // Save channel for the reminder
-            creatorId: message.author.id,
-            reminded: false,
-            id: Date.now().toString(), // Simple unique ID
-        };
-
-        try {
-            // Read the data file
-            const dataFile = fs.readFileSync('./data.json', 'utf8');
-            const data = JSON.parse(dataFile);
-
-            // Initialize the 'events' array if it doesn't exist
-            if (!data.events) {
-                data.events = [];
-            }
-
-            // Add the new event
-            data.events.push(newEvent);
-
-            // Write the updated data back to the file
-            fs.writeFileSync('./data.json', JSON.stringify(data, null, 2), 'utf8');
-
-            // Send confirmation embed
-            const confirmationEmbed = new EmbedBuilder()
-                .setColor('#05398e')
-                .setTitle('🗓️ Event Scheduled!')
-                .setDescription(`I will remind everyone in this channel 30 minutes before the event you just scheduled!`)
-                .addFields(
-                    { name: 'Event Name', value: eventName, inline: false },
-                    { name: 'Time', value: `<t:${Math.floor(scheduledTime.getTime() / 1000)}:F>`, inline: true },
-                    { name: 'Place', value: eventPlace, inline: true },
-                    { name: 'Scheduled By', value: message.author.tag, inline: true }
-                )
-                .setTimestamp();
-
-            message.channel.send({ embeds: [confirmationEmbed] });
-
-        } catch (error) {
-            console.error('Error scheduling event or accessing data.json:', error);
-            message.reply('An error occurred while trying to save the event.');
-        }
+    // Now let's ensure that the input is A. formatted correctly, and B. not in the past.
+    if (isNaN(scheduledTime.getTime())) {
+        return interaction.reply({
+            content: `I don't think that was formatted correctly, do you mind checking over what you inputted to see if it matches my format?`,
+            flags: [MessageFlags.Ephemeral]
+        });
     }
 
+    if (scheduledTime <= currentTime) {
+        return interaction.reply({
+            content: `Believe it or not... This date already happened... I can only remind you about FUTURE events, I can't time travel just yet.`,
+            flags: [MessageFlags.Ephemeral]
+        });
+    }
+
+
+    // This is how we'll create event objects
+    const newEvent = {
+        name: eventName,
+        time: scheduledTime.toISOString(),
+        place: eventLoc,
+        channelId: channel.id,
+        creatorId: user.id,
+        reminded: false,
+        id: Date.now().toString(),
+    };
+
+    // Send the console log so we know for later...
+    console.log(`[${new Date().toLocaleString()}] Sparky heard /schedule from ${interaction.user.tag}`);
+
+    try {
+        // Now let's connect to the data.json file and throw it in there with the others...
+        const dataFile = fs.readFileSync(DATA_PATH, 'utf8');
+        const data = JSON.parse(dataFile);
+
+        if (!data.events) data.events = [];
+        data.events.push(newEvent);
+
+        fs.writeFileSync(DATA_PATH, JSON.stringify(data, null, 2), 'utf8');
+
+        // Tell the user it actually worked
+        const confirmationEmbed = new EmbedBuilder()
+        .setColor('#05398e')
+        .setTitle('🗓️ Event Scheduled!')
+        .setDescription(`I'll send a reminder here when it's 30min to curtain call!`)
+        .addFields(
+            { name: 'Event Name', value: eventName, inline: false},
+            {name: 'Time', value: `<t:${Math.floor(scheduledTime.getTime() / 1000)}:F>`, inline: true},
+            {name: 'Place', value: eventLoc, inline: true},
+            {name: 'Scheduled By', value: interaction.user.tag, inline: true}
+        )
+        .setTimestamp();
+
+        await interaction.reply({ embeds: [confirmationEmbed], flags: [MessageFlags.Ephemeral]});
+        console.log(`[${new Date().toLocaleString()}] Sparky successfully sent a reminder for an event`)
+
+    } catch (error) {
+        console.error('Sparky ran into an issue attempting to write down an event:', error);
+        if (!interaction.replied) {
+            await interaction.reply({ content: 'I seem to have lost my pen and paper, please try again later!', flags: [MessageFlags.Ephemeral]});
+        }
+    }
+}
 };

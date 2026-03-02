@@ -1,26 +1,46 @@
-const { EmbedBuilder } = require('discord.js');
+const { EmbedBuilder, MessageFlags, SlashCommandBuilder } = require('discord.js');
 const fs = require('fs');
 
 module.exports = {
-    name: 'pels',
-    description: 'Test for embeds feature',
-    execute(message, client){
-        // This creates and designs the embed
-        const pels = new EmbedBuilder()
+    // Slash Command Structure
+    data: new SlashCommandBuilder()
+    .setName('pels')
+    .setDescription(`See some information about PELS!`),
+
+    async execute(interaction){
+        const DATA_PATH = './data.json';
+
+        // Read data.json so we can i++ the stat
+        let data;
+        try {
+            const dataFile = fs.readFileSync(DATA_PATH, 'utf8');
+            data = JSON.parse(dataFile);
+        } catch (error) {
+            console.error(`Sparky couldn't read data.json:`, error);
+            return interaction.reply({content: `I forgot what I was going to say. Please try again later!`});
+        }
+
+        // Send the console log so we know the command was triggered and by whom
+        console.log(`[${new Date().toLocaleString()}] Sparky heard /pels from ${interaction.user.tag}`)
+
+        // Create the embed
+        const embed = new EmbedBuilder()
         .setColor('#ce153f')
         .setTitle("❓ IEEE Power and Electronics Society")
         .setDescription(`
-            What is PELS here at UTSA look like? We're a small organization dedicated to creating unique learning opportunities and providing members with professional development focused towards the realm of small scale power and electronics. The best way to "plug in" to PELS is through our [linktree](https://linktr.ee/utsaieeepels?utm_source=linktree_profile_share&ltsid=d4aacff5-3a54-4c67-ac58-468ad1c703df), that contains everything from our instagram, how to become a member, and our RowdyLink! If you've got any other questions please feel free to reach out to our officers! 😁
+            What is PELS here at UT San Antonio? We're a small organization dedicated to creating both unique learning/professional opportunities and bridging the gap between theory and practicum for small-scale power and electronics. The best way to "plug in" to PELS is through our [linktree](https://linktr.ee/utsaieeepels?utm_source=linktree_profile_share&ltsid=d4aacff5-3a54-4c67-ac58-468ad1c703df), which has everything you need to get involved with us! Make sure to keep up with our RowdyLink to know when our next event on campus is!
             `)
-        .setFooter({ text: 'Last updated on 9/23/25.' });
+        .setFooter({text: `Last updated on 2/7/26.`})
 
-        message.channel.send({ embeds: [pels] });
+        // Respond to the user via interaction
+        await interaction.reply({embeds: [embed] });
 
-        // Counter
-        const dataFile = fs.readFileSync('./data.json', 'utf8');
-        const data = JSON.parse(dataFile);
-        data.pels_count = (data.pels_count + 1);
-        fs.writeFileSync('./data.json', JSON.stringify(data, null, 4), 'utf8');
-
+        // Update the usage in stats (now admin panel)
+        try{
+            data.pels_count = (data.pels_count || 0) + 1;
+            fs.writeFileSync(DATA_PATH, JSON.stringify(data, null, 4), 'utf8');
+        } catch (err) {
+            console.error(`Sparky couldn't update pels_count in data.json:`, err);
+        }
     }
 }

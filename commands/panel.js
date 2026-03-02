@@ -1,40 +1,72 @@
-const { EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, MessageFlags } = require('discord.js');
 const fs = require('fs');
 
 module.exports = {
-    name: 'panel',
-    description: 'Test for embeds feature',
-    execute(message, client){
-        // This creates and designs the embed
-        const panel = new EmbedBuilder()
+    //Slash Command Structure
+    data: new SlashCommandBuilder()
+    .setName('manual')
+    .setDescription(`See all of Sparky's commands!`),
+
+    async execute(interaction){
+        const DATA_PATH = './data.json';
+
+        // Read data.json so we can i++ the stat
+        let data;
+        try {
+            const dataFile = fs.readFileSync(DATA_PATH, 'utf8');
+            data = JSON.parse(dataFile);
+        } catch (error) {
+            console.error(`Sparky couldn't read data.json:`, error);
+            return interaction.reply({content: `I lost my manual. Try again later!`});
+        }
+
+        // Send the console log so we know the command was triggered and by whom
+        console.log(`[${new Date().toLocaleString()}] Sparky heard /manual from ${interaction.user.tag}`)
+
+        // We'll access the client via the interaction object
+        const client = interaction.client;
+
+        // Let's pull the current number of servers the bot is in right now.
+        const serverCount = client.guilds.cache.size;
+
+        // Let's also pull the total users of all the servers the bot is in right now.
+        const totalUsers = client.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0);
+
+        // Here we'll pull the current version data.
+        const ver = JSON.parse(fs.readFileSync('./data.json', 'utf8'));
+        const currentVersion = ver.version
+
+        const embed = new EmbedBuilder()
         .setColor('#05398e')
         .setTitle("⚡ Sparky's Command Panel")
         .setURL()
+        .addFields()
         .setDescription(`
-            **Traditional Commands**
-            !panel - brings up this manual 📄
-            !pels - Get some more information on PELS 💡
-            !invitesparky - Invite Sparky over 🎈
-            !unplug - Unplug Sparky 🔌
-            !stats - What do the numbers say? #️⃣
-            !schedule - Save the date!
-
-            **Fun Commands**
-            !8ball - 🎱
+## Commands
+            **/manual** - brings up this manual 📄
+            **/pels** - Get some more information on PELS @ UTSA 💡
+            **/invite** - Invite Sparky to your Server! 🎈
+            **/schedule** - Get a 30min reminder before an event! 📅
+            **/profile** - Check out your account! 📖
+            **/register** - UTSA Students can link their abc123
+## Fun Commands
+            **/8ball** - 🎱
+            **/imagetext** - Add Top/Bottom Text to an image! 🪟
         
             `)
         .setTimestamp()
-        //.setThumbnail()
-        .setFooter({ text: 'v0.1.8a | 3 Servers', iconURL: client.user.displayAvatarURL() });
+        .setFooter({ text: `${currentVersion} | ${serverCount} Servers | ${totalUsers} Users`, iconURL: client.user.displayAvatarURL() });
+        
+        // Respond to the user via interaction
+        await interaction.reply({ embeds: [embed], flags: [MessageFlags.Ephemeral]});
 
-        message.channel.send({ embeds: [panel] });
 
-        // Counter
-        const dataFile = fs.readFileSync('./data.json', 'utf8');
-        const data = JSON.parse(dataFile);
-        data.panel_count = (data.panel_count + 1);
-        fs.writeFileSync('./data.json', JSON.stringify(data, null, 4), 'utf8');
+        // Update the usage in stats (now admin panel)
+        try{
+            data.panel_count = (data.panel_count || 0) + 1;
+            fs.writeFileSync(DATA_PATH, JSON.stringify(data, null, 4), 'utf8');    
+        } catch (err) {
+            console.error(`Sparky couldn't update panel_count in data.json`, err);
+        }
     }
 }
-
-
