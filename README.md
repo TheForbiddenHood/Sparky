@@ -1,5 +1,5 @@
 # Sparky
-This is the first repo with Git Commit for the Sparky Discord Bot 
+This is the first repo with Git for the Sparky Discord Bot (This project began in 2025)
 
 ### How do you push / pull? (So I don't forget later)
 
