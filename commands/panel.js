@@ -22,7 +22,6 @@ module.exports = {
 
         // Send the console log so we know the command was triggered and by whom
         console.log(`[${new Date().toLocaleString()}] Sparky heard /manual from ${interaction.user.tag}`)
-``
         // We'll access the client via the interaction object
         const client = interaction.client;
 
