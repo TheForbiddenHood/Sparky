@@ -19,6 +19,7 @@ module.exports = {
             });
         }
 
+        // Lets go ahead and go through the data.json file
         let data;
         try {
             const dataFile = fs.readFileSync(DATA_PATH, 'utf8');
@@ -26,7 +27,7 @@ module.exports = {
         } catch (error) {
             console.error(`Sparky couldn't read data.json:`, error);
             return interaction.reply({
-                content: `I couldn't read the Admin list at this time. Please try again later.`,
+                content: `I couldn't read the Operator list at this time. Please try again later.`,
                 flags: [MessageFlags.Ephemeral]
             });
         }
