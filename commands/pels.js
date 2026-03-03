@@ -10,7 +10,7 @@ module.exports = {
     async execute(interaction){
         const DATA_PATH = './data.json';
 
-        // Read data.json so we can i++ the stat
+        // Read data.json so we can i++ the stat in operator panel
         let data;
         try {
             const dataFile = fs.readFileSync(DATA_PATH, 'utf8');
@@ -23,7 +23,7 @@ module.exports = {
         // Send the console log so we know the command was triggered and by whom
         console.log(`[${new Date().toLocaleString()}] Sparky heard /pels from ${interaction.user.tag}`)
 
-        // Create the embed
+        // Create the embed called 'embed'
         const embed = new EmbedBuilder()
         .setColor('#ce153f')
         .setTitle("❓ IEEE Power and Electronics Society")
@@ -32,10 +32,10 @@ module.exports = {
             `)
         .setFooter({text: `Last updated on 2/7/26.`})
 
-        // Respond to the user via interaction
+        // Respond to the user via interaction (this one is public so EVERYONE can see it!)
         await interaction.reply({embeds: [embed] });
 
-        // Update the usage in stats (now admin panel)
+        // Update the usage in operator panel
         try{
             data.pels_count = (data.pels_count || 0) + 1;
             fs.writeFileSync(DATA_PATH, JSON.stringify(data, null, 4), 'utf8');

@@ -7,10 +7,10 @@ module.exports = {
     .setDescription('Turn off Sparky Remotely'),
 
     async execute(interaction) {
-        // My discord ID
+        // My discord ID (needs to be updated to support pulling this from the data.json file)
         const BigBoss = '315244440707137547';
 
-        // Lets see if the user is 'BigBoss' or not.
+        // Lets see if the user is me or not
         if (interaction.user.id !== BigBoss){
             return interaction.reply({
                 content: `You do not have permission to use this command. This command is NOT intended for users.`,
@@ -21,7 +21,7 @@ module.exports = {
         // Send the console log so we know the command was triggered and by whom
         console.log(`[${new Date().toLocaleString()}] Sparky heard /unplug from ${interaction.user.tag}`);
 
-        // Give feedback to the user
+        // Give feedback to the user (aka me)
         await interaction.reply({ content: `You unplugged me! I'm entering rest mode.`});
 
         // Delay the shutdown so the interaction occurs

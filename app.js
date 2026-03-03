@@ -1,6 +1,5 @@
-// importing all dependencies
+// importing all dependencies for the bot first
 const { Client, GatewayIntentBits, GatewayVersion, ActivityType, EmbedBuilder, Collection, Partials, CommandInteraction } = require("discord.js");
-// Did you really think I would just give you my bot token?
 const token = require("./token.js");
 const fs = require('fs');
 const DATA_PATH = './data.json';
@@ -11,7 +10,7 @@ const protectLogic = require('./vindicator/protectlogic.js');
 const newJoinStartup = require('./utility/notifandintro.js');
 const expressServer = require('./utility/cardswipes.js');
 
-// This is how we'll update statues from time to time.
+// This is how we'll update statuses every 5 minutes (I believe I wrote it as every 5min I'll double check)
 function updateStatus(client){
     try {
         const data = JSON.parse(fs.readFileSync(DATA_PATH, 'utf8'));
@@ -29,6 +28,7 @@ function updateStatus(client){
     }
 }
 
+// This function checks if the user is in a server where Sparky is in and ALREADY has 2 infractions. (They got banned somewhere else)
 async function vindicatorPatrol(client){
     let data;
     try {
@@ -50,7 +50,7 @@ async function vindicatorPatrol(client){
                     if (member && member.kickable) {
                         await member.kick('Vindicator caught a high-risk user and removed them.');
 
-                        console.log(`${logTimeStamp()} Vindicator Patrol kicked ${userId} from ${guild.name}`);
+                        console.log(`${logTimeStamp()} Sparky caught ${userId} in ${guild.name} (This user was flagged in another server)`);
                     }
                 } catch (err) {}
             }
@@ -59,7 +59,7 @@ async function vindicatorPatrol(client){
 }
 
 
-// Slash Commands imported here
+// Slash Commands are imported here
 const slashCommand = require("./commands/slashtest.js");
 const unplugCommand = require("./commands/unplug.js");
 const eightballCommand = require("./commands/8ball.js");
@@ -106,14 +106,13 @@ client.commands.set(welcomeCommand.data.name, welcomeCommand);
 client.commands.set(registerCommand.data.name, registerCommand);
 client.commands.set(promoteCommand.data.name, promoteCommand);
 
+// This function is for as said in its name, to check the reminders set by the /schedule command
 function checkReminders(client) {
     let data;
     try {
-        // READ the data.json file
         const dataFile = fs.readFileSync(DATA_PATH, 'utf8');
         data = JSON.parse(dataFile);
     } catch (e) {
-        // If file doesn't exist or is invalid, just return
         return; 
     }
 
@@ -138,11 +137,11 @@ function checkReminders(client) {
         // 30min reminder checker
         if (timeUntilEvent > 0 && timeUntilEvent <= REMINDER_WINDOW_MS && !event.reminded) {
             
-            // Get the channel to send the message
+            // Get the channel to send the message (same as previously requested)
             const channel = client.channels.cache.get(event.channelId);
 
             if (channel) {
-                // Send the reminder message
+                // Send the reminder message at teh 30min mark
                 const reminderEmbed = new EmbedBuilder()
                     .setColor('#FFD700') 
                     .setTitle(`🔔 Event Reminder`)
@@ -175,7 +174,7 @@ function checkReminders(client) {
 client.on('ready', () => {
     console.log(`[${new Date().toLocaleString()}] Login completed successfully as ${client.user.tag}!`);
 
-    // Here we set all of the interval background checks
+    // Here we set all of the interval background checks First # is minutes
     setInterval(() => checkReminders(client), 60000);
     setInterval(() => vindicatorPatrol(client), 10 * 60 * 1000);
     setInterval(() => updateStatus(client), 5 * 60 * 1000);
@@ -192,16 +191,14 @@ client.on('guildCreate', async guild => {
     await newJoinStartup.handleServerJoin(guild);
 });
 
-// Feeling lost with the commands? Let's talk about it!
-// to enable the bot and get it up and running type 'node app.js' into the console. This starts the application locally.
-
-// This is the slash command listener, installed for now. Could become the ONLY command listener if test goes well.
+// This is the slash command listener - we use this to listen for slash commands incoming to Sparky
 client.on('interactionCreate', async interaction => {
 
     // Handle Slash Commands
     if (interaction.isChatInputCommand()) {
         const command = client.commands.get(interaction.commandName);
 
+        // If somehow not a command, log it. This SHOULDN'T happen.
         if (!command) {
         console.error(`Sparky couldn't find the ${interaction.commandName} command that was attempted by ${interaction.author.tag}`);
         return;
@@ -244,10 +241,11 @@ client.on('interactionCreate', async interaction => {
 });
 
 // Listener for incoming messages (This scans ALL messages sent by users for the prefix)
+// We have this here so we can check for phishing and scams.
 client.on('messageCreate', async message => {
     if (message.author.bot) return;
 
-    // Vindicator Intervention BEFORE complying with incoming message (T = Scam, F = SAFE)
+    // Vindicator Security Intervention BEFORE complying with incoming message (T = Scam, F = SAFE)
     const scamFound = await protectLogic.handleVindicator(message, DATA_PATH);
     if (scamFound) return;
 });
@@ -266,7 +264,7 @@ client.on('guildMemberAdd', async member => {
             }
         }
     
-    // Welcome Message Handler (UPDATED AS OF 2/19)
+    // Welcome Message Handler (Now works better and allows for users to make edits to them on Discord rather than by me internally)
     if (data.welcome_configs && data.welcome_configs[guildId]) {
         const config = data.welcome_configs[guildId];
         const channel = client.channels.cache.get(config.channelId);
@@ -281,5 +279,5 @@ client.on('guildMemberAdd', async member => {
 
 });
 
-// "token" refers to token.js which will keep the bot's unique token safe from prying eyes by keeping it local to the host here.
+// "token" is the token.js file where I store the bot's authentication token (obv this is not public)
 client.login(token);

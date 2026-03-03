@@ -2,7 +2,7 @@ const { EmbedBuilder } = require('discord.js');
 const fs = require('fs');
 
 async function handleServerJoin(guild) {
-    const BigBoss = '315244440707137547';
+    const BigBoss = '315244440707137547'; // Needs to be updated to pull from the data.json
     const DATA_PATH = './data.json';
     const client = guild.client;
 
@@ -31,6 +31,8 @@ async function handleServerJoin(guild) {
 
     try {
         const owner = await client.users.fetch(BigBoss);
+
+        // Create the embed called 'joinServer'
         const joinServer = new EmbedBuilder()
         .setColor('#05398e')
         .setTitle('Sparky Joined a New Server')
@@ -43,7 +45,7 @@ async function handleServerJoin(guild) {
         .setTimestamp();
 
         await owner.send({embeds: [joinServer] });
-        console.log(`[${new Date().toLocaleString()}] Sparky joined ${guild.name}!`);
+        console.log(`[${new Date().toLocaleString()}] Sparky was added to a new server: ${guild.name}!`);
     } catch (err) {
         console.error("@emilioondisc was unresponsive. Weird.", err);
     }

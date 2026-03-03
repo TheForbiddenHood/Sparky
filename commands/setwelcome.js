@@ -12,13 +12,13 @@ module.exports = {
         const DATA_PATH = './data.json';
         const { user, guild } = interaction;
 
+        // We add this check since there's no reason to try to process a request if it's NOT in a server, since operators are specific to servers
         if (!guild) {
             return interaction.reply({
                 content: "I think it's kind of hard to set a welcome message for a DM. Maybe I can lay down a welcome mat or something... (you need to be in a server to use this command)",
                 flags: [MessageFlags.Ephemeral]
             });
         }
-
 
         let data;
                 try {
@@ -32,22 +32,24 @@ module.exports = {
                     });
                 }
 
-        // Permissions Check and Blockade
+        // Permissions Check and Blockade (This checks to ENSURE that the user is either an operator or me lol)
         const isBigBoss = (data.bigboss.includes(user.id));
         const operatorForServer = (data.defined_operators && data.defined_operators[guild.id]) || [];
         const isAuthorized = isBigBoss || operatorForServer.includes(user.id);
 
+        // If we find out the user is NOT an operator we send them a private message that says oh no no no girl
        if (!isAuthorized) {
         return interaction.reply({
             content: `You are not defined as an operator on this server.`,
             flags: [MessageFlags.Ephemeral]
         });
     }
-        
+        // Create the modal called 'modal'
         const modal = new ModalBuilder()
                 .setCustomId('welcomeConfigModal')
                 .setTitle('Welcome Message Editor');
         
+        // Here are the inputs we're receiving from the modal
         const channelInput = new TextInputBuilder()
                 .setCustomId('welcomeChannelId')
                 .setLabel("Channel ID")
@@ -75,6 +77,8 @@ module.exports = {
     async handleModalSubmit(interaction) {
         const DATA_PATH = './data.json';
         const guildId = interaction.guild.id;
+
+        // Put the values we received from the modal into variables we can use for later
         const channelId = interaction.fields.getTextInputValue('welcomeChannelId');
         const welcomeMsg = interaction.fields.getTextInputValue('welcomeMessage');
 
@@ -90,6 +94,7 @@ module.exports = {
 
         fs.writeFileSync(DATA_PATH, JSON.stringify(data, null, 2), 'utf8');
 
+        // Send the message to let the user know privately that their message was saved correctly
         await interaction.reply({
             content: `Welcome Message Updated Successfully! <#${channelId}> with Message: ${welcomeMsg}`,
             flags: [MessageFlags.Ephemeral]

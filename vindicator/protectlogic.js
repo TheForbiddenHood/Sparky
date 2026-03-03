@@ -35,7 +35,7 @@ async function handleVindicator(message, dataPath){
             if (message.member && message.member.kickable){
                 await message.member.kick(`Vindicator has detected you have reached the infraction threshold. You have been AXED.`);
                 message.channel.send(`My spidey-senses determined that <@${userId}> was attempting to scam or impersonate me (a bot). They have been removed. Happy chatting!`);
-                console.log(`[${new Date().toLocaleString()}] Vindicator kicked <@${userId}>`)
+                console.log(`[${new Date().toLocaleString()}] Sparky kicked <@${userId}> after being flagged twice by Vindicator`)
             } else {
                 message.channel.send(`Vindicator determined that <@${userId}> should be removed, but I lack the persmissions to do it myself.`);
             }

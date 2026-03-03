@@ -10,7 +10,7 @@ module.exports = {
     async execute(interaction){
         const DATA_PATH = './data.json';
 
-        // Read data.json so we can i++ the stat
+        // Read data.json so we can i++ the stat 
         let data;
         try {
             const dataFile = fs.readFileSync(DATA_PATH, 'utf8');
@@ -23,17 +23,17 @@ module.exports = {
         // Send the console log so we know the command was triggered and by whom
         console.log(`[${new Date().toLocaleString()}] Sparky heard /invite from ${interaction.user.tag}`)
 
-        // Let's make the embed
+        // Let's make the embed called 'embed'
         const embed = new EmbedBuilder()
         .setColor('#800080')
         .setDescription(`
             I appreciate the thought! You can invite me by clicking [here](https://discord.com/oauth2/authorize?client_id=1419423775560306708&permissions=75794&integration_type=0&scope=bot) 🎉
             `)
         
-        // Respond to the user via interaction
+        // Respond to the user via an embed that is visible only to the user and no one else. I think it's more intimate that way
         await interaction.reply({embeds: [embed], flags: [MessageFlags.Ephemeral]});
 
-        // Update the usage in stats (now admin panel)
+        // Update the usage number in operator panel
         try{
             data.invitesparky_count = (data.invitesparky_count || 0) + 1;
             fs.writeFileSync(DATA_PATH, JSON.stringify(data, null, 4), 'utf8');

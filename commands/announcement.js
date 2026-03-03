@@ -86,6 +86,6 @@ module.exports = {
             content: `Newspaper was sent out, I was able to successfully deliver to **${successCount}** admins, and failed to deliver to **${failCount}** admins (DMs were probably closed).`
         });
 
-        console.log(`[${new Date().toLocaleString()}] Announcement made successfully.`)
+        console.log(`[${new Date().toLocaleString()}] Sparky successfully made an announcement to all server owners.`)
      }
 };

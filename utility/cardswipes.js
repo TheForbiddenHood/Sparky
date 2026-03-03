@@ -36,7 +36,6 @@ function initHardwareBridge(client){
             return res.status(401).end();
             }
         
-
         const cleanId = studentAbc.toLowerCase().trim();
         const location = stationName || `Unknown Location`;
         const registrations = data.abc123_registration || {};

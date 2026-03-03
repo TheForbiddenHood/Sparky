@@ -8,7 +8,7 @@ const clientId = require('./clientid.js');
 
 const commands = [];
 
-// Find slash commands in their files
+// Locate slash commands appropriately by pointing to their locations within the files
 const slashtest = require('./commands/slashtest.js');
 const eightball = require('./commands/8ball.js');
 const manual = require('./commands/panel.js');
@@ -25,7 +25,7 @@ const welconfig = require('./commands/setwelcome.js');
 const register = require('./commands/register.js');
 const promote = require('./commands/promote.js');
 
-// Push slash commands
+// Push slash commands to JSON for Discord
 commands.push(slashtest.data.toJSON());
 commands.push(eightball.data.toJSON());
 commands.push(manual.data.toJSON());

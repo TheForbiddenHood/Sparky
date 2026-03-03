@@ -37,7 +37,7 @@ module.exports = {
         const randomReply = Math.floor(Math.random() * ballResponse.length);
         const eightballResponse = ballResponse[randomReply];
 
-        // The embed
+        // Here we'll initialize the actual embed titled 'embed'
         const embed = new EmbedBuilder()
         .setColor('#7289DA')
         .setTitle('The Magic 8-Ball has spoken...')
@@ -46,7 +46,7 @@ module.exports = {
         // Respond to the user via interaction
         await interaction.reply({ embeds: [embed] });
 
-        // Update the usage in stats (now admin panel)
+        // Update the usage numbers for /operator-panel
         try{
             data.ball_count = (data.ball_count || 0) + 1;
             fs.writeFileSync(DATA_PATH, JSON.stringify(data, null, 4), 'utf8');

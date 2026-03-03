@@ -1,48 +1,14 @@
-# Sparky
-This is the first repo with Git for the Sparky Discord Bot (This project began in 2025)
-Yeah, it's STILL ongoing (I'm having fun though so it's okay!)
+# Sparky Discord Bot
+This repo is for the Sparky discord bot! Sparky is a multi-layered bot that has anti-phishing & scam detection with both some fun and moderation commands! 
 
-### How do you push / pull? (So I don't forget later)
+It also particularly has a hardware integration tool with ngrok to allow for UT San Antonio students to use their Student IDs with Sparky bot at Sparky Swipe Locations in the EB!
 
-Saving from local to remote
+Sparky started as a small solution for a student organization discord server to have customized welcome messages has grown into a much larger project that in its own way has consumed my free time (to which I am happy this project is really fun)
 
-**Stage them with...**
-```
-git add .
-```
+## Why is this repo public?
+I want Sparky to not only be just a passion project of my own, but also a good step for new and beginning bot-builders to learn how to craft their own discord bots! If you're interested, Sparky relies on Discord.js, Node, jimp, and ngrok to function in its current state. Sparky is written entirely in JavaScript, and Sparky Swipe locations are coded in Python.
 
-**Then move on to actually committing (This throws everything staged without YOU manually checking)**
-```
-git commit -m "Message"
-```
+## Have Questions, comments, concerns?
+If you're stuck on something while trying to learn from Sparky, or want to ask questions or collaborate please feel free to reach out! I'd love to hear from you C:
 
-**Push the new baby out**
-```
-git push
-```
-
-**Is the baby remote? Send the baby to your local git**
-```
-git pull
-```
-
-**Did you drop the baby somewhere? Don't worry you can use the Time Stone!**
-```
-git log
-```
-That will get the HASHs (history of the commits with unique IDs )
-
-```
-git checkout HASH
-```
-
-### Terminal Controls
-Lost? Don't fear, the controls are HERE
-
-```
-Ctrl + C (Kill Current Process)
-
-Q (Common Editor Exit)
-
-Ctrl + X (Nano Finish / Exit)
-```
+### Sparky was started in October 2025.

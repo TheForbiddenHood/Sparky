@@ -41,6 +41,7 @@ async execute(interaction){
         });
     }
 
+    // Let's do a check if the event the user is entering is in the past, because how would we track to it if it already happened?
     if (scheduledTime <= currentTime) {
         return interaction.reply({
             content: `Believe it or not... This date already happened... I can only remind you about FUTURE events, I can't time travel just yet.`,
@@ -86,6 +87,7 @@ async execute(interaction){
         )
         .setTimestamp();
 
+        // Send the confirmation embed to the user for a successful event planning (privately)
         await interaction.reply({ embeds: [confirmationEmbed], flags: [MessageFlags.Ephemeral]});
         console.log(`[${new Date().toLocaleString()}] Sparky successfully sent a reminder for an event`)
 

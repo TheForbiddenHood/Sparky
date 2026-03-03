@@ -5,7 +5,7 @@ module.exports = {
     // Slash Command Structure
     data: new SlashCommandBuilder()
     .setName('edit')
-    .setDescription(`Manually edit a user's infractions (Admins Only)`)
+    .setDescription(`Manually edit a user's infractions (Operators Only)`)
     .addUserOption(option =>
         option.setName('user')
         .setDescription('The user you want to adjust')
@@ -20,7 +20,7 @@ module.exports = {
         const DATA_PATH = './data.json';
         const { options, client, user, guild, member } = interaction;
 
-        // Pull the current infraction data from vindicator
+        // Pull the current infraction data from vindicator security
         let data;
         try {
             const dataFile = fs.readFileSync(DATA_PATH, 'utf8');

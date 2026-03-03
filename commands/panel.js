@@ -22,7 +22,7 @@ module.exports = {
 
         // Send the console log so we know the command was triggered and by whom
         console.log(`[${new Date().toLocaleString()}] Sparky heard /manual from ${interaction.user.tag}`)
-
+``
         // We'll access the client via the interaction object
         const client = interaction.client;
 
@@ -36,9 +36,10 @@ module.exports = {
         const ver = JSON.parse(fs.readFileSync('./data.json', 'utf8'));
         const currentVersion = ver.version
 
+        // We'll create the embed called 'embed'
         const embed = new EmbedBuilder()
         .setColor('#05398e')
-        .setTitle("⚡ Sparky's Command Panel")
+        .setTitle("⚡ Sparky's Manual")
         .setURL()
         .addFields()
         .setDescription(`
@@ -61,7 +62,7 @@ module.exports = {
         await interaction.reply({ embeds: [embed], flags: [MessageFlags.Ephemeral]});
 
 
-        // Update the usage in stats (now admin panel)
+        // Update the usage in operator panel
         try{
             data.panel_count = (data.panel_count || 0) + 1;
             fs.writeFileSync(DATA_PATH, JSON.stringify(data, null, 4), 'utf8');    
