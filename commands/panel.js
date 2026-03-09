@@ -22,7 +22,6 @@ module.exports = {
 
         // Send the console log so we know the command was triggered and by whom
         console.log(`[${new Date().toLocaleString()}] Sparky heard /manual from ${interaction.user.tag}`)
-``
         // We'll access the client via the interaction object
         const client = interaction.client;
 
@@ -43,17 +42,19 @@ module.exports = {
         .setURL()
         .addFields()
         .setDescription(`
-## Commands
-            **/manual** - brings up this manual 📄
-            **/pels** - Get some more information on PELS @ UTSA 💡
-            **/invite** - Invite Sparky to your Server! 🎈
-            **/schedule** - Get a 30min reminder before an event! 📅
-            **/profile** - Check out your account! 📖
-            **/register** - UTSA Students can link their abc123
-## Fun Commands
-            **/8ball** - 🎱
-            **/imagetext** - Add Top/Bottom Text to an image! 🪟
-        
+### Commands
+        **/manual** - brings up this manual 📄
+        **/pels** - Get some more information on PELS @ UTSA 💡
+        **/invite** - Invite Sparky to your Server! 🎈
+        **/schedule** - Get a 30min reminder before an event! 📅
+        **/profile** - Check out your account! 📖
+        **/register** - UTSA Students can link their abc123
+### Fun Commands
+        **/8ball** - 🎱
+        **/imagetext** - Add Top/Bottom Text to an image! 🪟
+### Information
+        [Privacy Policy](https://github.com/TheForbiddenHood/Sparky/blob/master/PRIVACYPOLICY.md)
+        [Terms of Service](https://github.com/TheForbiddenHood/Sparky/blob/master/TERMSOFSERVICE.md)
             `)
         .setTimestamp()
         .setFooter({ text: `${currentVersion} | ${serverCount} Servers | ${totalUsers} Users`, iconURL: client.user.displayAvatarURL() });

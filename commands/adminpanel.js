@@ -56,7 +56,7 @@ module.exports = {
         .setTitle("⚡ Sparky's Operator Command Panel")
         .setURL()
         .setDescription(`
-## Commands
+### Commands
             **/operator-panel** - Opens this Panel
             **/edit** - Allows you to edit user infractions
             **/editwelcome** - Opens the Welcome Message Editor
@@ -64,7 +64,7 @@ module.exports = {
             **/unplug** - Turns off Sparky
             **/announcement** - Sends a broadcast to ALL admins
 
-## Usage Numbers
+### Usage Numbers
             /manual - ${data.panel_count + 1 || 0} uses
             /pels - ${data.pels_count + 1 || 0} uses
             /invite - ${data.invitesparky_count + 1 || 0} uses
