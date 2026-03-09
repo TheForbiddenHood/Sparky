@@ -38,6 +38,7 @@ module.exports = {
         const operatorForServer = (data.defined_operators && data.defined_operators[guild.id]) || [];
         const isAuthorized = isBigBoss || operatorForServer.includes(user.id);
 
+        // This is standard across all commands that require an authorization check.
        if (!isAuthorized) {
         return interaction.reply({
             content: `You are not defined as an operator on this server.`,
@@ -50,6 +51,7 @@ module.exports = {
         const targetId = targetUser.id;
         const adjustment = options.getInteger('amount');
 
+        // If the user tries to target Sparky we'll send a little message because I honestly don't want to handle that fiasco.
         if (targetId === client.user.id) {
             return interaction.reply({
                 content: `Wait... that's me! Don't do that!`,

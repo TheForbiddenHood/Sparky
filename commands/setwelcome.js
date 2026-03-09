@@ -37,7 +37,7 @@ module.exports = {
         const operatorForServer = (data.defined_operators && data.defined_operators[guild.id]) || [];
         const isAuthorized = isBigBoss || operatorForServer.includes(user.id);
 
-        // If we find out the user is NOT an operator we send them a private message that says oh no no no girl
+        // This is standard across all commands that require an authorization check.
        if (!isAuthorized) {
         return interaction.reply({
             content: `You are not defined as an operator on this server.`,

@@ -58,7 +58,6 @@ async function vindicatorPatrol(client){
     }
 }
 
-
 // Slash Commands are imported here
 const slashCommand = require("./commands/slashtest.js");
 const unplugCommand = require("./commands/unplug.js");
@@ -76,6 +75,8 @@ const welcomeCommand = require('./commands/setwelcome.js');
 const registerCommand = require('./commands/register.js');
 const promoteCommand = require('./commands/promote.js');
 
+// My own mental note of changes I made without pushing to the hardware application: 1
+
 // Launch a new Discord Client, and declare intents (permissions for bot)
 const client = new Client({
     intents: [
@@ -85,7 +86,6 @@ const client = new Client({
         GatewayIntentBits.GuildMembers
     ],
     partials: [Partials.Channel]
-   
 });
 
 // This is where we'll create a collection for the slash commands
@@ -177,9 +177,9 @@ client.on('ready', () => {
     // Here we set all of the interval background checks First # is minutes
     setInterval(() => checkReminders(client), 60000);
     setInterval(() => vindicatorPatrol(client), 10 * 60 * 1000);
-    setInterval(() => updateStatus(client), 5 * 60 * 1000);
+    setInterval(() => updateStatus(client), 10 * 60 * 1000);
 
-    // Here we'll run intial sweeps
+    // Here we'll run intial sweeps off of client startup
     checkReminders(client);
     vindicatorPatrol(client);
     updateStatus(client);
@@ -198,7 +198,7 @@ client.on('interactionCreate', async interaction => {
     if (interaction.isChatInputCommand()) {
         const command = client.commands.get(interaction.commandName);
 
-        // If somehow not a command, log it. This SHOULDN'T happen.
+        // If somehow not a command, log it. This SHOULDN'T happen. However, we'll keep this here to avoid the bot crashing if this SOMEHOW happens
         if (!command) {
         console.error(`Sparky couldn't find the ${interaction.commandName} command that was attempted by ${interaction.author.tag}`);
         return;
@@ -219,7 +219,7 @@ client.on('interactionCreate', async interaction => {
     }
 }
 
-    // Modal Submittal and Handling
+    // Modal Submittal and Handling (This will be updated each time we add a new modal)
     if (interaction.isModalSubmit()) {
         
         if (interaction.customId === 'annModal') {
@@ -240,8 +240,7 @@ client.on('interactionCreate', async interaction => {
     }
 });
 
-// Listener for incoming messages (This scans ALL messages sent by users for the prefix)
-// We have this here so we can check for phishing and scams.
+// This listener listens to all incoming messages; We have this here so we can check for phishing and scams.
 client.on('messageCreate', async message => {
     if (message.author.bot) return;
 
