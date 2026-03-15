@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, MessageFlags } = require('discord.js');
+const fs = require('fs');
 
 module.exports = {
     //Slash Command Structure

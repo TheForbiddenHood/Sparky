@@ -27,7 +27,7 @@ module.exports = {
         const embed = new EmbedBuilder()
         .setColor('#800080')
         .setDescription(`
-            I appreciate the thought! You can invite me by clicking [here](https://discord.com/oauth2/authorize?client_id=1419423775560306708&permissions=75794&integration_type=0&scope=bot) 🎉
+            I appreciate the thought! You can invite me by clicking [here](https://discord.com/oauth2/authorize?client_id=1419423775560306708&permissions=8590010386&integration_type=0&scope=bot) 🎉
             `)
         
         // Respond to the user via an embed that is visible only to the user and no one else. I think it's more intimate that way

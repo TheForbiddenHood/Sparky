@@ -3,7 +3,7 @@ const { Client, GatewayIntentBits, GatewayVersion, ActivityType, EmbedBuilder, C
 const token = require("./token.js");
 const fs = require('fs');
 const DATA_PATH = './data.json';
-const REMINDER_WINDOW_MS = 30 * 60 * 1000;
+const REMINDER_WINDOW_MS = 30 * 60 * 1000; // 30 minutes
 
 // Logic Imports
 const protectLogic = require('./vindicator/protectlogic.js');

@@ -3,6 +3,7 @@ const { EmbedBuilder } = require('discord.js');
 const fs = require('fs');
 
 function initHardwareBridge(client){
+    // Turn on the express server
     const server = express();
     server.use(express.json());
 
@@ -38,11 +39,24 @@ function initHardwareBridge(client){
         
         const cleanId = studentAbc.toLowerCase().trim();
         const location = stationName || `Unknown Location`;
+        const now = new Date();
+
+        const activeEvent = (data.events || []).find(event => {
+            if (!event.station || event.station !== location) return false;
+
+            const startTime = new Date(event.time);
+            const endTime = new Date(startTime.getTime() + (60 * 60 * 1000)); // 1 Hour Duration
+
+            return now >= startTime && now <= endTime;
+        });
+
+        // Identify the User
         const registrations = data.abc123_registration || {};
         const profile = registrations[cleanId];
         const discordId = profile ? profile.discordId : null;
         const userDisplay = discordId ? `<@${discordId}>` : `\`${cleanId}\` (Unregistered)`;
 
+        // This is how we update the last swipe info in /profile
         if (discordId) {
                 if (!data.last_swipes) data.last_swipes = {};
                 data.last_swipes[discordId] = {
@@ -60,7 +74,7 @@ function initHardwareBridge(client){
                 const swipeEmbed = new EmbedBuilder()
             .setColor(discordId ? '#00ff73' : '#ffa500')
             .setTitle(discordId ? 'Recieved Swipe!' : 'Unknown Swipe')
-            .setDescription(discordId ? `Welcome back ${userDisplay}` : `An Unregistered ID was scanned.`)
+            .setDescription(activeEvent ? `User checked into the ongoing event!` : (discordId ? `Welcome back ${userDisplay}` : `An Unregistered ID was scanned.`))
             .addFields(
                 { name: 'Station', value: location || 'Unknown Location', inline: true },
                 { name: 'Student ID', value: `\`${studentAbc}\``, inline: true },
