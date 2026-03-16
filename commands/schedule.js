@@ -38,7 +38,7 @@ async execute(interaction){
     // Send a nice and sweet console log so we know what's up
     console.log(`[${new Date().toLocaleString()}] Sparky heard /schedule from ${interaction.user.tag}`);
 
-    // Server Check - If user is calling this outsie of a server... what's the point? We're not accepting this.
+    // Server Check - If user is calling this outside of a server... what's the point? We're not accepting this.
         if (!guild) {
             return interaction.reply({
                 content: "This command can only be used within a server. :(",
@@ -50,7 +50,7 @@ async execute(interaction){
     // events, then we'll decline the command. (This is mostly a retro-proofing for servers Sparky is currently on)
     if (!guild.members.me.permissions.has(PermissionFlagsBits.ManageEvents)) {
         return interaction.reply({
-            content: `It looks like I do not have the correct permissions to do this here (Edit Events)`
+            content: `It looks like I do not have the correct permissions to do this in this server. (Manage Events)`
         });
     }
 
@@ -91,7 +91,7 @@ async execute(interaction){
 
         // Let's create the actual Discord Event.
         const discordEvent = await guild.scheduledEvents.create({
-            name: stationLink ? `⚡ ${eventName}` : eventName, // This if is so we know if it's a UT San Antonio event or not. Keep it easy!
+            name: stationLink ? `[⚡] ${eventName}` : eventName, // This if is so we know if it's a UT San Antonio event or not. Keep it easy!
             scheduledStartTime: scheduledTime,
             scheduledEndTime: endTime,
             privacyLevel: GuildScheduledEventPrivacyLevel.Guild || 2,
