@@ -4,6 +4,7 @@ const token = require("./token.js");
 const fs = require('fs');
 const DATA_PATH = './data.json';
 const REMINDER_WINDOW_MS = 30 * 60 * 1000; // 30 minutes
+const EVENT_DURATION_MS = 60 * 60 * 1000; // 1 Hour (Will be used for Check-ins)
 
 // Logic Imports
 const protectLogic = require('./vindicator/protectlogic.js');
@@ -126,13 +127,14 @@ function checkReminders(client) {
     // Loop through all saved events
     data.events = data.events.filter(event => {
         const eventTime = new Date(event.time).getTime();
-        const timeUntilEvent = eventTime - now;
-
-        // Did the event already happen? If it did we do NOT need it
-        if (timeUntilEvent < -REMINDER_WINDOW_MS) {
-            eventsUpdated = true; 
-            return false; 
+        const eventEnd = eventTime + EVENT_DURATION_MS;
+        
+        if (now > eventEnd) {
+            eventsUpdated = true;
+            return false;
         }
+
+        const timeUntilEvent = eventTime - now;
 
         // 30min reminder checker
         if (timeUntilEvent > 0 && timeUntilEvent <= REMINDER_WINDOW_MS && !event.reminded) {

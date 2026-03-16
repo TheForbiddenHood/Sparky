@@ -1,6 +1,7 @@
 const express = require('express');
 const { EmbedBuilder, MessageFlags } = require('discord.js');
 const fs = require('fs');
+const { start } = require('repl');
 
 function initHardwareBridge(client){
     // Turn on the express server
@@ -22,7 +23,8 @@ function initHardwareBridge(client){
     
     // Receive the Swipe from External Hardware
     server.post('/api/swipe', async (req, res) => {
-        const { studentAbc, key, stationName } = req.body;
+
+        const { studentAbc, key, stationName, station, location: locBody } = req.body;
 
         try{
             const dataFile = fs.readFileSync(DATA_PATH, 'utf8');
@@ -30,7 +32,6 @@ function initHardwareBridge(client){
             const liveConfig = data.bridge_config;
 
             const KEY = liveConfig.api_key;
-            const LOG_TEST = liveConfig.log_channel_id;
 
             if (key !== KEY) {
             console.log(`[${new Date().toLocaleString()}] Sparky received an unauthorized data entry request. It was denied.`);
@@ -38,33 +39,36 @@ function initHardwareBridge(client){
             }
         
         const cleanId = studentAbc.toLowerCase().trim();
-        const location = stationName || `Unknown Location`;
+        const location = (stationName || station || locBody || `Unknown Location`).trim();
         const now = new Date();
 
         // This is how we look at ongoing events, and determine if the swipe was for a check-in or just a standard swipe.
         const activeEvent = (data.events || []).find(event => {
             if (!event.station || event.station !== location) return false;
 
-            const startTime = new Date(event.time);
-            const endTime = new Date(startTime.getTime() + (60 * 60 * 1000)); // 1 Hour Duration for event from startTime
+            const startTime = new Date(event.time).getTime();
+            const endTime = startTime + (60 * 60 * 1000); // 1 Hour Duration for event from startTime
+            const currentTime = now.getTime();
 
-            return now >= startTime && now <= endTime;
+            return currentTime >= startTime && currentTime <= endTime;
         });
 
         // Identify the User
         const registrations = data.abc123_registration || {};
         const profile = registrations[cleanId];
         const discordId = profile ? profile.discordId : null;
-        const userDisplay = discordId ? `<@${discordId}>` : `\`${cleanId}\` (Unregistered)`;
 
         // If the swipe came from a registered user - lets DM them to let them know they checked in!
         if (discordId) {
             try {
                 const user = await client.users.fetch(discordId);
+
+                const eventText = activeEvent ? `into the ${activeEvent.name} event` : `in at ${location}`;
+
                 const dmConfirm= new EmbedBuilder()
                     .setColor('#00ff73')
                     .setTitle(`Check in Successful`)
-                    .setDescription(`Hello **${user.username}**! You've successfully checked into the **${activeEvent.name}** event. Have fun!`)
+                    .setDescription(`Hello **${user.username}**! You've successfully checked ${eventText}. Have fun!`)
                     .setFooter({ text: `Sparky Swipe`});
 
                 await user.send({ embeds: [dmConfirm]}).catch(() => {
@@ -97,7 +101,7 @@ function initHardwareBridge(client){
                     .setTitle(`Sparky Swipe for ${activeEvent.name}`)
                     .setDescription(`**${location}** is the active Sparky Swipe Station.`)
                     .addFields(
-                        { name: 'Total Check-ins', value: `**${activeEvent.swipeCount}**, inline: true`}
+                        { name: 'Total Check-ins', value: `**${activeEvent.swipeCount}**`, inline: true }
                     )
                     .setFooter({ text: 'Sparky Swipe'});
 
