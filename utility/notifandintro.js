@@ -52,15 +52,19 @@ async function handleServerJoin(guild) {
 
     try {
         const serverOwner = await guild.fetchOwner();
-        const introEmbed = new EmbedBuilder()
+const introEmbed = new EmbedBuilder()
         .setColor('#05398e')
-        .setTitle('⚡ Welcome to Sparky!')
-        .setDescription(`Howdy, I'm Sparky!`)
-        .addFields(
-            {name: '❓ Getting Started', value: 'Use /manual in any text channel or even here to see all my available commands.', inline: false},
-            {name: '🪓 Vindicator', value: 'I have automatically enabled my scam/phish protection in your server.', inline: false},
-            {name: '🔐 Admin Permissions', value: 'Use /admin-panel to see all of my admin level commands. Contact @emilioondisc for permissions.', inline: false}
-        )
+        .setTitle(`⚡ Welcome to Sparky!`)
+        .setDescription(`
+### Getting Started
+                Use **/manual** in any text channel (or right here) to see all my available commands! You can also use a '/' and take a look right above your message bar!
+### Sparky Security
+                Don't fear! Sparky's anti-phishing and anti-scam protection has been enabled on your server! (This includes removing any users who have already been caught and are in Sparky's expansive database of known phishers)
+### Operator Permissions
+                Use **/operator-panel** *inside* your server to see all the operator-level commands at your disposal! Have no fear using it in a normal text channel, Sparky will keep it hidden for your eyes only!
+### Sparky Newsletter
+                Now that you're using Sparky, anytime Sparky has large updates or announcements, expect an awesome message from me explaining my new capabilities! I'm improving every single day!
+            `)
         .setTimestamp()
         .setFooter({ text: `Sparky`, iconURL: client.user.displayAvatarURL() });
         await serverOwner.send({ embeds: [introEmbed]});
