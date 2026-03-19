@@ -17,6 +17,7 @@ module.exports = {
             });
         }
 
+        // This is where we'll create the modal for the actual embed we're sending
         const modal = new ModalBuilder()
         .setCustomId('annModal')
         .setTitle('Sparky Admin Broadcast');

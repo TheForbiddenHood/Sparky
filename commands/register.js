@@ -13,7 +13,7 @@ module.exports = {
             .setCustomId('registerModal')
             .setTitle('UT San Antonio Student Registration w/ Sparky');
 
-        // This is the inputs...
+        // These are the inputs...
         const idInput = new TextInputBuilder()
             .setCustomId('bush_abc123')
             .setLabel(`UT San Antonio ID (abc123)`)
