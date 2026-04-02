@@ -53,7 +53,7 @@ module.exports = {
         const channelInput = new TextInputBuilder()
                 .setCustomId('welcomeChannelId')
                 .setLabel("Channel ID")
-                .setPlaceholder('Insert the Channel ID of the channel you want my welcome messages to go to!')
+                .setPlaceholder('Insert Channel ID of where you want the messages to go!')
                 .setStyle(TextInputStyle.Short)
                 .setRequired(true);
         
