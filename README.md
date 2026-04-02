@@ -3,7 +3,7 @@ This repo is for the Sparky discord bot! Sparky is a multi-layered bot that has 
 
 It also particularly has a hardware integration tool with ngrok to allow for UT San Antonio students to use their Student IDs with Sparky bot at Sparky Swipe Locations in the EB!
 
-Sparky started as a small solution for a student organization discord server to have customized welcome messages has grown into a much larger project that in its own way has consumed my free time (to which I am happy this project is really fun)
+Sparky started as a small solution for a student organization discord server to have customized welcome messages has grown into a much larger project that in its own way has consumed my free time (to which I am happy this project is really fun). I work on this project of course when I do have free time, which is why there are gaps in commits that appear to be bursts of progress. Believe me, this is my first thought when I wake up and my last thought before I go to sleep.
 
 ## Why is this repo public?
 I want Sparky to not only be just a passion project of my own, but also a good step for new and beginning bot-builders to learn how to craft their own discord bots! If you're interested, Sparky relies on *Discord.js*, *Node*, *jimp*, and *ngrok* to function in its current state. Sparky is written entirely in JavaScript, and Sparky Swipe locations are coded in Python.
