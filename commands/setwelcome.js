@@ -63,11 +63,19 @@ module.exports = {
                 .setPlaceholder("User [user] to mention the new member in your message!")
                 .setStyle(TextInputStyle.Paragraph)
                 .setRequired(true);
+
+        const dmInput = new TextInputBuilder()
+                .setCustomId('welcomeDm')
+                .setLabel("Private DM Message")
+                .setPlaceholder("Leave blank if you don't want to send a DM. [user] works here too!")
+                .setStyle(TextInputStyle.Paragraph)
+                .setRequired(false);
         
         const firstActionRow = new ActionRowBuilder().addComponents(channelInput);
         const secondActionRow = new ActionRowBuilder().addComponents(messageInput);
+        const thirdActionRow = new ActionRowBuilder().addComponents(dmInput);
 
-        modal.addComponents(firstActionRow, secondActionRow);
+        modal.addComponents(firstActionRow, secondActionRow, thirdActionRow);
 
         await interaction.showModal(modal);
 
@@ -81,6 +89,7 @@ module.exports = {
         // Put the values we received from the modal into variables we can use for later
         const channelId = interaction.fields.getTextInputValue('welcomeChannelId');
         const welcomeMsg = interaction.fields.getTextInputValue('welcomeMessage');
+        const dmMsg = interaction.fields.getTextInputValue('welcomeDm');
 
     try {
         const data = JSON.parse(fs.readFileSync(DATA_PATH, 'utf8'));
@@ -89,14 +98,18 @@ module.exports = {
 
         data.welcome_configs[guildId] = {
             channelId: channelId,
-            message: welcomeMsg
+            message: welcomeMsg,
+            dmMessage: dmMsg || null
         };
 
         fs.writeFileSync(DATA_PATH, JSON.stringify(data, null, 2), 'utf8');
 
+        // To let the user know they enabled DM messages or not we will include it in the interaction reply to the editor
+        const status = dmMsg ? "Public & DM message." : "Public Message (No DM).";
+
         // Send the message to let the user know privately that their message was saved correctly
         await interaction.reply({
-            content: `Welcome Message Updated Successfully! <#${channelId}> with Message: ${welcomeMsg}`,
+            content: `Welcome Message Updated Successfully! Welcome message will be sent to channel: <#${channelId}> with Message: ${welcomeMsg}, and is a ${status}`,
             flags: [MessageFlags.Ephemeral]
         });
 
