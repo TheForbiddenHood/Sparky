@@ -76,7 +76,7 @@ const welcomeCommand = require('./commands/setwelcome.js');
 const registerCommand = require('./commands/register.js');
 const promoteCommand = require('./commands/promote.js');
 
-// My own mental note of changes I made without pushing to the hardware application: 1
+// My own mental note of changes I made without pushing to the hardware application: 2
 
 // Launch a new Discord Client, and declare intents (permissions for bot)
 const client = new Client({
@@ -143,7 +143,7 @@ function checkReminders(client) {
             const channel = client.channels.cache.get(event.channelId);
 
             if (channel) {
-                // Send the reminder message at teh 30min mark
+                // Send the reminder message at the 30min mark
                 const reminderEmbed = new EmbedBuilder()
                     .setColor('#FFD700') 
                     .setTitle(`🔔 Event Reminder`)
@@ -256,28 +256,40 @@ client.on('guildMemberAdd', async member => {
     const guildId = member.guild.id;
 
     try {
-        const data = JSON.parse(fs.readFileSync(DATA_PATH, 'utf8'));
+        const dataFile = fs.readFileSync(DATA_PATH, 'utf8');
+        const data = JSON.parse(dataFile);
+
+        // Vindicator Blacklisting Check
         if (data.scam_reports && data.scam_reports[member.id] >= 2) {
             if (member.kickable) {
-                await member.kick('Vindicator found user attempting to rejoin a Sparky-defended server.');
-                console.log(`[${new Date().toLocaleString()}] Vindicator blocked previously removed ${member.id} upon attempting to rejoin.`);
-                return; // No welcome message for them!!
+                await member.kick('I found a user attempting to rejoin a Sparky-Protected server.');
+                console.log(`[${new Date().toLocaleString()}] Sparky blocked previously removed ${member.id} upon attempting to join or rejoin a server.`);
+                return; // No Welcome Message for them!!! lol
             }
         }
-    
-    // Welcome Message Handler (Now works better and allows for users to make edits to them on Discord rather than by me internally)
-    if (data.welcome_configs && data.welcome_configs[guildId]) {
-        const config = data.welcome_configs[guildId];
-        const channel = client.channels.cache.get(config.channelId);
 
-        if (channel) {
-            const finalMessage = config.message.replace('[user]', `<@${member.id}>`);
-            return channel.send(finalMessage);
+        // Welcome Message Handler (This now includes BOTH a server message + DM message)
+        if (data.welcome_configs && data.welcome_configs[guildId]) {
+            const config = data.welcome_configs[guildId];
+
+            // Server Welcome Message
+            const channel = client.channels.cache.get(config.channelId);
+            if (channel) {
+                const finalMessage = config.message.replace('[user]', `<@${member.id}>`); // this replaces the [user] in the entry to a ping
+                await channel.send(finalMessage).catch(e => console.error("Server Welcome Message Failed:", e));
+            }
+
+            // DM Welcome Message
+            if (config.dmMessage) {
+                const finalDm = config.dmMessage.replace('[user]', `<@${member.user.username}>`); // this replaces the [user] in the entry to a ping)
+                await member.send(finalDm).catch(() => {
+                    console.log(`[${new Date().toLocaleString()}] Welcome DM skipped for ${member.user.tag} (They probably have DMs closed)`);
+                });
+            }
         }
+    } catch (e) {
+        console.error(`Join Handler failed:`, e);
     }
-
-} catch (e) { console.error(`Blacklist check failed:`, e); }
-
 });
 
 // "token" is the token.js file where I store the bot's authentication token (obv this is not public)
