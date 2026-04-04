@@ -281,7 +281,7 @@ client.on('guildMemberAdd', async member => {
 
             // DM Welcome Message
             if (config.dmMessage) {
-                const finalDm = config.dmMessage.replace('[user]', `<@${member.user.username}>`); // this replaces the [user] in the entry to a ping)
+                const finalDm = config.dmMessage.replace('[user]', member.user.username); // this replaces the [user] in the entry to the user's name)
                 await member.send(finalDm).catch(() => {
                     console.log(`[${new Date().toLocaleString()}] Welcome DM skipped for ${member.user.tag} (They probably have DMs closed)`);
                 });
