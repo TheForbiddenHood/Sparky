@@ -51,7 +51,7 @@ module.exports = {
         **/register** - UTSA Students can link their abc123
 ### Fun Commands
         **/8ball** - 🎱
-        **/imagetext** - Add Top/Bottom Text to an image! 🪟
+        **/meme** - Add Top/Bottom Text to an image! 🪟
 ### Information
         [Privacy Policy](https://github.com/TheForbiddenHood/Sparky/blob/master/PRIVACYPOLICY.md)
         [Terms of Service](https://github.com/TheForbiddenHood/Sparky/blob/master/TERMSOFSERVICE.md)
