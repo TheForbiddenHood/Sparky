@@ -63,7 +63,7 @@ const introEmbed = new EmbedBuilder()
 ### Operator Permissions
                 Use **/operator-panel** *inside* your server to see all the operator-level commands at your disposal! Have no fear using it in a normal text channel, Sparky will keep it hidden for your eyes only!
 ### Sparky Newsletter
-                Now that you're using Sparky, anytime Sparky has large updates or announcements, expect an awesome message from me explaining my new capabilities! I'm improving every single day!
+                Now that you're using Sparky, anytime Sparky has large updates or announcements, expect an awesome message from me explaining my new capabilities! I'm improving just about every single day!
             `)
         .setTimestamp()
         .setFooter({ text: `Sparky`, iconURL: client.user.displayAvatarURL() });
