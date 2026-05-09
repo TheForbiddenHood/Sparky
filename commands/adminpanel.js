@@ -69,7 +69,7 @@ module.exports = {
             /pels - ${data.pels_count + 1 || 0} uses
             /invite - ${data.invitesparky_count + 1 || 0} uses
             /8ball - ${data.ball_count + 1 || 0} uses
-            /imagetext - ${data.meme_count + 1 || 0} uses
+            /meme - ${data.meme_count + 1 || 0} uses
 
             *(Want a feature? Something go wrong? Please let @emilioondisc know!)*
             `)
