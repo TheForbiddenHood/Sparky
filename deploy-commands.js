@@ -24,6 +24,7 @@ const ann = require('./commands/announcement.js');
 const welconfig = require('./commands/setwelcome.js');
 const register = require('./commands/register.js');
 const promote = require('./commands/promote.js');
+const reactmenu = require('./utility/reactmenu.js');
 
 // Push slash commands to JSON for Discord
 commands.push(slashtest.data.toJSON());
@@ -41,6 +42,7 @@ commands.push(ann.data.toJSON());
 commands.push(welconfig.data.toJSON());
 commands.push(register.data.toJSON());
 commands.push(promote.data.toJSON());
+commands.push(reactmenu.data.toJSON());
 
 
 // Construct and prepare an instance of the REST module

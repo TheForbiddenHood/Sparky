@@ -10,6 +10,7 @@ const EVENT_DURATION_MS = 60 * 60 * 1000; // 1 Hour (Will be used for Check-ins)
 const protectLogic = require('./vindicator/protectlogic.js');
 const newJoinStartup = require('./utility/notifandintro.js');
 const expressServer = require('./utility/cardswipes.js');
+const { initReactionRoles } = require('./utility/react.js');
 
 // This is how we'll update statuses every 5 minutes (I believe I wrote it as every 5min I'll double check)
 function updateStatus(client){
@@ -75,18 +76,25 @@ const announcementCommand = require('./commands/announcement.js');
 const welcomeCommand = require('./commands/setwelcome.js');
 const registerCommand = require('./commands/register.js');
 const promoteCommand = require('./commands/promote.js');
+const reactCommand = require('./utility/reactmenu.js');
 
-// My own mental note of changes I made without pushing to the hardware application: 2
+// My own mental note of changes I made without pushing to the hardware application: sonion idk I lowkey be forgetting - I need to tally this better.
 
-// Launch a new Discord Client, and declare intents (permissions for bot)
+// Launch a new Discord Client, and declare intents + partials (permissions for bot)
 const client = new Client({
     intents: [
         GatewayIntentBits.Guilds, 
         GatewayIntentBits.GuildMessages, 
         GatewayIntentBits.MessageContent, 
-        GatewayIntentBits.GuildMembers
+        GatewayIntentBits.GuildMembers,
+        GatewayIntentBits.GuildScheduledEvents,
+        GatewayIntentBits.GuildMessageReactions,
     ],
-    partials: [Partials.Channel]
+    partials: [
+        Partials.Message,
+        Partials.Reaction,
+        Partials.User
+    ],
 });
 
 // This is where we'll create a collection for the slash commands
@@ -106,6 +114,7 @@ client.commands.set(announcementCommand.data.name, announcementCommand);
 client.commands.set(welcomeCommand.data.name, welcomeCommand);
 client.commands.set(registerCommand.data.name, registerCommand);
 client.commands.set(promoteCommand.data.name, promoteCommand);
+client.commands.set(reactCommand.data.name, reactCommand);
 
 // This function is for as said in its name, to check the reminders set by the /schedule command
 function checkReminders(client) {
@@ -185,6 +194,9 @@ client.on('ready', () => {
     checkReminders(client);
     vindicatorPatrol(client);
     updateStatus(client);
+    
+    initReactionRoles(client);
+
     expressServer.initHardwareBridge(client);
 });
 
