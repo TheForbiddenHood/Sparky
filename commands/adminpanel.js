@@ -63,6 +63,7 @@ module.exports = {
             **/promote** - Promote your members to Operators!
             **/unplug** - Turns off Sparky
             **/announcement** - Sends a broadcast to ALL admins
+            **/reactmenu** - Allows for Editing / Creating Reaction Role Menus!
 
 ### Usage Numbers
             /manual - ${data.panel_count + 1 || 0} uses
